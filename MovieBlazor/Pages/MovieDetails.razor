@@ -1,0 +1,110 @@
+﻿@page "/moviedetails"
+@using MovieBlazor.MovieAPI
+@using MovieBlazor.Models
+
+<!-- Credits -->
+@if (Program.credits != null)
+{
+    @if (Program.videoSet != null)
+    {
+        <div id="video-carousel-example" class="carousel slide carousel-fade" data-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+                <div class="carousel-item active">
+                    @foreach (Videos v in Program.videoSet.results)
+                    {
+                        if (CounterVideo == 0)
+                        {
+                            <div class="embed-responsive embed-responsive-21by9">
+                                <!-- <source src="https://www.youtube.com/embed/@Program.videoSet.results[i].key"/>-->
+                                <iframe class="pb-video-frame" src="https://www.youtube.com/embed/@v.key" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            CounterVideo++;
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        CounterVideo = 0;
+    }
+
+    <hr class="mt-2 mb-5">
+
+    <div class="card mb-3" style="background-color:rgb(5, 39, 123)">
+        <div class="row no-gutters">
+            <div class="col-md-3">
+                <img src="https://image.tmdb.org/t/p/w342/@Program.movie.poster_path" class="card-img" alt="@Program.movie.title">
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h2 class="card-title">@Program.movie.title</h2>
+                    <p class="card-text">@Program.movie.overview</p>
+                    <table class="table table-striped">
+                        <tr class="table-light">
+                            <td>Release Date:</td>
+                            <td>@Program.movie.release_date</td>
+                        </tr>
+                        <tr class="table-light">
+                            <td>Budget:</td>
+                            <td>@Program.movie.budget</td>
+                        </tr>
+                        <tr class="table-light">
+                            <td>Imdb Page link:</td>
+                            <td><a href="https://www.imdb.com/title/@Program.movie.imdb_id" target="_blank">  @Program.movie.title</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="mt-2 mb-5">
+
+    <h2 class="font-weight-light text-center text-lg-left mt-4 mb-0">  Casts</h2>
+    <!-- cast info -->
+<div class="card-deck">
+    
+        @foreach (Cast i in Program.credits.cast)
+        {
+            if (Counter < MaxCastPics)
+            {
+                string path = "https://image.tmdb.org/t/p/w185" + i.profile_path;
+                <div class="col-md-2 col-sm-6 col-12">
+                <div class="card-columns-fluid border border-white" style="margin:5px;">
+                    <img class="card-img-top" src="@path" alt="Card image" @onclick="@(e => GetActorDeets(i.id))" style="max-width:200px;min-height:200px; align-content:center" />
+                    <div class="card-body">
+                        <h6 class="card-title"> @i.name</h6>
+                        <p class="card-text">Charecter:</p>
+                        <p class="card-text">@i.character</p>
+                        <a @onclick="@(e => GetActorDeets(i.id))" class="btn btn-primary">See Profile</a>
+                    </div>
+                </div>
+                </div>
+                Counter++;
+            }
+        }
+    </div>
+
+}
+
+<!-- Actor Details -->
+@if (Program.actor != null)
+{
+    <MovieBlazor.Pages.ActorDetails />
+
+}
+
+@code {
+    private int MaxCastPics = 8;
+    private int Counter = 0;
+    private int CounterVideo = 0;
+
+    //== Cast Details ==//
+    private async Task GetActorDeets(int actorID)
+    {
+        await Program.fetch.GrabActorDetailsAsync(actorID);
+        await Program.fetch.GrabSocialDetails(actorID);
+        Program.credits = null;
+        Program.posterSet = null;
+        Program.latestMovieSet = null;
+    }
+}

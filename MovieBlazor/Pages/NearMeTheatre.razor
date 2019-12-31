@@ -1,0 +1,56 @@
+﻿@page "/nearmetheatre"
+
+@using MovieBlazor.MovieAPI
+@using MovieBlazor.Models
+
+<h2 class="text-center">NearMeTheatre</h2>
+<hr class="mt-2 mb-5">
+
+@if (Program.all_movies.Count > 0)
+{
+    <div class="col-md-8">
+
+        @foreach (NearMeTheatreSet t in Program.nearMeTheatreSet)
+        {
+            <h3 class="card-title">@t.title</h3>
+            <p>@t.shortDescription</p>
+            <p>Run Time:  @t.runTime.Substring(2)</p>
+
+            @for (int i = 0; i < t.showtimes.Count - 1; i++)
+            {
+                //avoid duplication
+                @if (@t.showtimes[i].theatre.name != @theatreName)
+                {
+                    <br><p>@t.showtimes[i].theatre.name</p>
+
+                }
+                theatreName = @t.showtimes[i].theatre.name;
+                <div class="row">
+                    <div class="col">
+                        @t.showtimes[i].dateTime.ToString("HH:MM tt")
+                    </div>
+                </div>
+
+            }
+
+        }
+
+
+    </div>
+
+}
+
+@code {
+    public string theatreName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Program.latestMovieSet = null;
+        Program.credits = null;
+        Program.posterSet = null;
+        Program.actor = null;
+        Program.videoSet = null;
+        Program.upcomingMovieSet = null;
+        await Program.fetch.GrabNearMeTheatreDetails();
+    }
+}

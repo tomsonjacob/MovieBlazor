@@ -1,0 +1,14 @@
+﻿Sorry, there was a problem downloading some files from OneDrive. Please try again.
+
+db.lock - https://onedrive.live.com/?cid=3bc0f0f911457ea7&id=3BC0F0F911457EA7%211612416&action=Download
+
+MovieBlazor.StaticWebAssets.Manifest.cache - https://onedrive.live.com/?cid=3bc0f0f911457ea7&id=3BC0F0F911457EA7%211612428&action=Download
+
+MovieBlazor.csproj.CopyComplete - https://onedrive.live.com/?cid=3bc0f0f911457ea7&id=3BC0F0F911457EA7%211612408&action=Download
+
+MovieBlazor.MvcApplicationPartsAssemblyInfo.cache - https://onedrive.live.com/?cid=3bc0f0f911457ea7&id=3BC0F0F911457EA7%211612403&action=Download
+
+MovieBlazor.TagHelpers.input.cache - https://onedrive.live.com/?cid=3bc0f0f911457ea7&id=3BC0F0F911457EA7%211612395&action=Download
+
+
+

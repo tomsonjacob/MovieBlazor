@@ -1,0 +1,46 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="#">MovieBlazor</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="#" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Movie
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/actor">
+                <span class="oi oi-people" aria-hidden="true"></span> Actor
+            </NavLink>
+        </li>
+        <li class="nav-item dropdown px-3">
+            <a class="nav-link" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="oi oi-people" aria-hidden="true"></span>  Genres
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color:rgb(5, 39, 123)">
+                <a class="dropdown-item" href="/genres/28/Action">Action</a>
+                <a class="dropdown-item" href="/genres/16/Animation">Animation</a>
+                <a class="dropdown-item" href="/genres/35/Comedy">Comedy</a>             
+            </div>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/nearmetheatre">
+                <span class="oi oi-people" aria-hidden="true"></span> NearMe
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    bool collapseNavMenu = true;
+
+    string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    void ToggleNavMenu() {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

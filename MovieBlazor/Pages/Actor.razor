@@ -1,0 +1,106 @@
+﻿@page "/actor"
+
+@using MovieBlazor.MovieAPI
+@using MovieBlazor.Models
+
+<!--Search actors-->
+<div class="form-group row">
+    <div class="col-xl-11">
+        <input class="form-control" type="text" @bind-value="@search" @bind-value:event="oninput" @onkeyup="KeyHandler" placeholder="Search actor" />
+    </div>
+    <div class="col-xs-2">
+        <input class="form-control" id="searchButton" type="submit" @onclick="GetActors" value="Go" />
+    </div>
+</div>
+
+<!--Popular actors results when page loading-->
+@if (Program.popularActorSet != null)
+{
+    <h3>Popular Actor</h3>
+    <div class="card-deck">
+        @foreach (PopularActor i in Program.popularActorSet.results)
+        {
+             string path = "https://image.tmdb.org/t/p/w185" + i.profile_path;
+            <div class="col-md-2 col-sm-4 col-10">               
+                <div class="card-columns-fluid border border-white shadow p-3 mb-5 bg-white rounded" style="margin:5px;">
+                    <img class="card-img-top" src="@path" alt="Card image" @onclick="@(e =>GetActorDeets(i.id))" style="max-width:200px;min-height:200px; align-content:center" />
+                    <div class="card-body bg-blue">
+                        <h6 class="card-title text-primary font-weight-bold"> @i.name </h6>
+                        <a @onclick="@(e => GetActorDeets(i.id))" class="btn btn-primary">Profile</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!--Search actors results after search button click-->
+@if (Program.popularActorPosterSet != null)
+{
+    <div class="card-deck">
+        @foreach (PopularActorPoster p in Program.popularActorPosterSet.results)
+        {
+            @if (p.profile_path != null)
+            {
+                string path = "https://image.tmdb.org/t/p/w185" + p.profile_path;
+                <div class="card-columns-fluid border border-white shadow p-3 mb-5 bg-white rounded" style="margin:5px;">
+                    <img class="card-img-top" src="@path" alt="Card image" @onclick="@(e => GetActorDeets(p.id))" style="max-width:200px;min-height:200px; align-content:center" />
+                    <div class="card-body">
+                        <h6 class="card-title text-primary font-weight-bold"> @p.name </h6>
+                        <a @onclick="@(e => GetActorDeets(p.id))" class="btn btn-primary">See Profile</a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}
+
+<!--Actor details -->
+@if (Program.actor != null)
+{
+    <MovieBlazor.Pages.ActorDetails />
+}
+@code {
+    private string search { get; set; }
+
+    //==index page refresh  ==//
+    protected override async Task OnInitializedAsync()
+    {
+        await Program.fetch.GrabPopularActorDetails();
+    }
+
+    //==search result  ==//
+    private async Task GetActors()
+    {
+        await Program.fetch.GrabSearchActorAsync(search);
+        Program.popularActorSet = null;
+        Program.actor = null;
+    } // ActorSearc
+
+    //== Movie Details ==//
+    private async Task GetMovie(int id)
+    {
+        Program.posterSet = null;
+        Program.actor = null;
+        Program.latestMovieSet = null;
+        Program.videoSet = null;
+        await Program.fetch.GrabMovieAsync(id);
+    } // GetMovie()
+
+    //== Cast Details ==//
+    public async Task GetActorDeets(int id)
+    {
+        await Program.fetch.GrabActorDetailsAsync(id);
+        await Program.fetch.GrabSocialDetails(id);
+        Program.popularActorSet = null;
+        Program.popularActorPosterSet = null;
+    }
+    //== Actor Search box enter key ==//
+    private async Task KeyHandler(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await GetActors();
+        }
+    }
+}

@@ -1,0 +1,56 @@
+﻿@page "/genres"
+@page "/genres/{gen_id}/{gen_name}"
+
+@using MovieBlazor.MovieAPI
+@using MovieBlazor.Models
+
+<!--Upcoming Movie Details-->
+    @if (Program.genresSet != null)
+    {
+        <hr class="mt-2 mb-5">
+        <h2 class="font-weight-light text-center text-lg-left mt-4 mb-0">  @gen_name Movies</h2>
+        <hr class="mt-2 mb-5">
+    <div class="card-group">
+
+
+        @foreach (GenresData u in Program.genresSet.results)
+        {
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="card-columns-fluid border border-white shadow p-3 mb-5 bg-white rounded" style="margin:5px;">
+                    <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/@u.poster_path" alt="@u.original_title" @onclick="@(e => GetMovie(@u.id))" style="max-width:200px;min-height:200px; align-content:center" />
+                    <div class="card-body bg-blue">
+                        <h5 class="card-title text-primary">@u.original_title</h5>
+                        <p class="card-text text-primary">Release Date:@u.release_date</p>
+                        <input class="form-control" id="searchButton" type="submit" @onclick="@(e => GetMovie(@u.id))" value="More" />
+                    </div>
+                </div>
+            </div>
+
+        }
+
+
+    </div>
+}
+@if (Program.genresSet == null)
+{
+    <MovieBlazor.Pages.MovieDetails />
+}
+@code {
+    [Parameter]
+    public string gen_id { get; set; }
+    [Parameter]
+    public string gen_name { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Program.genresSet = null;
+        await Program.fetch.GrabGenresDetails(@gen_id);
+
+    }
+    //== Movie Details ==//
+    public async Task GetMovie(int id)
+    {
+        await Program.fetch.GrabMovieAsync(id);
+        Program.genresSet = null;
+    } // GetMovie()
+}
